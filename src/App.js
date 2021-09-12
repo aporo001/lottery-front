@@ -10,6 +10,9 @@ const useStyles = makeStyles(() =>
       width: "100%",
       textAlign: "center",
       marginTop: "30px",
+      "&>button": {
+        margin: "5px",
+      },
     },
     buyBox: {
       width: "100%",
@@ -39,9 +42,18 @@ const App = () => {
             </Button>
           </Box>
         ) : (
-          <Button variant="contained" onClick={() => wallet.connect()}>
-            login
-          </Button>
+          <>
+            <Button variant="contained" onClick={() => wallet.connect()}>
+              login
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={() => wallet.connect("walletconnect")}
+            >
+              login with wallet connect
+            </Button>
+          </>
         )}
       </Box>
       {wallet.status === "connected" && (
