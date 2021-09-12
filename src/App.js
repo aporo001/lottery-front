@@ -1,9 +1,10 @@
 import "./App.css";
 import { Button, Container, Box, Typography } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import cw from "./utils/connect-wallet";
+
 import React, { useState } from "react";
-const useStyles = makeStyles((theme) =>
+import { useWallet, UseWalletProvider } from "use-wallet";
+const useStyles = makeStyles(() =>
   createStyles({
     userBox: {
       width: "100%",
@@ -23,26 +24,27 @@ const useStyles = makeStyles((theme) =>
 
 const App = () => {
   const classes = useStyles();
-  const [currentAddress, setCurrentAddress] = useState("");
   const [numberTicket, setNumberTicket] = useState(0);
-
-  const login = async () => {
-    const addr = await cw.login();
-    setCurrentAddress(addr);
-  };
+  const wallet = useWallet();
 
   return (
     <Container>
       <Box className={classes.userBox}>
-        {currentAddress ? (
-          `wallet: ${currentAddress}`
+        {wallet.status === "connected" ? (
+          <Box>
+            wallet: {wallet.account}
+            <br />
+            <Button variant="contained" onClick={() => wallet.reset()}>
+              logout
+            </Button>
+          </Box>
         ) : (
-          <Button variant="contained" onClick={login}>
+          <Button variant="contained" onClick={() => wallet.connect()}>
             login
           </Button>
         )}
       </Box>
-      {currentAddress && (
+      {wallet.status === "connected" && (
         <Box className={classes.buyBox}>
           <Typography>
             Number of my ticket in this round: {numberTicket}
@@ -61,4 +63,20 @@ const App = () => {
   );
 };
 
-export default App;
+const AppWrapper = () => (
+  <UseWalletProvider
+    connectors={{
+      injected: {
+        rpcUrl: "https://matic-mumbai.chainstacklabs.com",
+        chainId: [80001],
+      },
+      walletconnect: {
+        chainId: [80001],
+        rpcUrl: "https://matic-mumbai.chainstacklabs.com",
+      },
+    }}
+  >
+    <App />
+  </UseWalletProvider>
+);
+export default AppWrapper;
