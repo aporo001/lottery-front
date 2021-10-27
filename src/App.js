@@ -78,8 +78,8 @@ const AppWrapper = () => (
   <UseWalletProvider
     connectors={{
       injected: {
-        rpcUrl: "https://matic-mumbai.chainstacklabs.com",
-        chainId: [80001],
+        rpcUrl: "https://ropsten.infura.io/v3/3a78ce77beba4f70bd3f26d907becd2b",
+        chainId: [3],
       },
     }}
   >
