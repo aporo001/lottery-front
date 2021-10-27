@@ -20,14 +20,14 @@ const useStyles = makeStyles(() =>
       marginTop: "30px",
     },
     buyButton: {
-      marginTop: "30px",
+      margin: "30px",
     },
   })
 );
 
 const App = () => {
   const classes = useStyles();
-  const [numberTicket, setNumberTicket] = useState(0);
+  const [depositBalance, setDepositBalance] = useState(0);
   const wallet = useWallet();
 
   return (
@@ -46,28 +46,27 @@ const App = () => {
             <Button variant="contained" onClick={() => wallet.connect()}>
               login
             </Button>
-
-            <Button
-              variant="contained"
-              onClick={() => wallet.connect("walletconnect")}
-            >
-              login with wallet connect
-            </Button>
           </>
         )}
       </Box>
       {wallet.status === "connected" && (
         <Box className={classes.buyBox}>
-          <Typography>
-            Number of my ticket in this round: {numberTicket}
-          </Typography>
+          <Typography>Deposit balance: {depositBalance}</Typography>
           <Button
             variant="contained"
             color="primary"
             size={"large"}
             className={classes.buyButton}
           >
-            BUY
+            Deposit
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            size={"large"}
+            className={classes.buyButton}
+          >
+            Withdrawal
           </Button>
         </Box>
       )}
@@ -81,10 +80,6 @@ const AppWrapper = () => (
       injected: {
         rpcUrl: "https://matic-mumbai.chainstacklabs.com",
         chainId: [80001],
-      },
-      walletconnect: {
-        chainId: [80001],
-        rpcUrl: "https://matic-mumbai.chainstacklabs.com",
       },
     }}
   >
