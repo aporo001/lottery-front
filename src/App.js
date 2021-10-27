@@ -2,8 +2,11 @@ import "./App.css";
 import { Button, Container, Box, Typography } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useWallet, UseWalletProvider } from "use-wallet";
+import { ethers } from "ethers";
+import { getBalance, deposit, withdrawal } from "./utils/connect-wallet";
+
 const useStyles = makeStyles(() =>
   createStyles({
     userBox: {
@@ -29,6 +32,31 @@ const App = () => {
   const classes = useStyles();
   const [depositBalance, setDepositBalance] = useState(0);
   const wallet = useWallet();
+  const provider =
+    wallet.status === "connected"
+      ? new ethers.providers.Web3Provider(wallet.ethereum)
+      : null;
+
+  const getBal = async () => {
+    const balance = await getBalance(wallet.account, provider);
+    setDepositBalance(balance);
+  };
+  useEffect(() => {
+    if (wallet.status === "connected") {
+      getBal();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wallet?.status]);
+
+  const depositFn = async () => {
+    await deposit(100, provider);
+    getBal();
+  };
+
+  const withdrawalFn = async () => {
+    await withdrawal(100, provider);
+    getBal();
+  };
 
   return (
     <Container>
@@ -57,6 +85,7 @@ const App = () => {
             color="primary"
             size={"large"}
             className={classes.buyButton}
+            onClick={depositFn}
           >
             Deposit
           </Button>
@@ -65,6 +94,7 @@ const App = () => {
             color="primary"
             size={"large"}
             className={classes.buyButton}
+            onClick={withdrawalFn}
           >
             Withdrawal
           </Button>
